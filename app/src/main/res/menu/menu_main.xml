@@ -11,5 +11,6 @@
         android:title="Ištrinti užrašą"
         android:icon="@android:drawable/ic_menu_delete"
         app:showAsAction="ifRoom" />
+
 </menu>
 
