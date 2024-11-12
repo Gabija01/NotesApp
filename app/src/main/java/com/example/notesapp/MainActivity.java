@@ -1,24 +1,70 @@
 package com.example.notesapp;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ListView;
+import android.content.SharedPreferences;
+import android.widget.ArrayAdapter;
+import android.util.Log;
+import java.util.ArrayList;
+import java.util.Map;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
+    private ListView listViewNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        listViewNotes = findViewById(R.id.listViewNotes);
+
+        loadNotes();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadNotes();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @SuppressLint("NonConstantResourceId")
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.menuAddNote) {
+            startActivity(new Intent(this, AddNoteActivity.class));
+            return true;
+        } else if (id == R.id.menuDeleteNote) {
+            startActivity(new Intent(this, DeleteNoteActivity.class));
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    private void loadNotes() {
+        SharedPreferences prefs = getSharedPreferences("NotesApp", MODE_PRIVATE);
+        Map<String, ?> notes = prefs.getAll();
+
+        ArrayList<String> noteTitles = new ArrayList<>(notes.keySet());
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, noteTitles);
+        listViewNotes.setAdapter(adapter);
+
+        Log.d("MainActivity", "Notes loaded: " + noteTitles.size() + " items");
     }
 }
+
