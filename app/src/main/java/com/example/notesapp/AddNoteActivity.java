@@ -28,6 +28,10 @@ public class AddNoteActivity extends AppCompatActivity {
                     editor.putString(title, content);
                     editor.apply();
 
+                    AppLogger.logNoteSaved(title);
+
+                    Toast.makeText(AddNoteActivity.this, "Užrašas išsaugotas!", Toast.LENGTH_SHORT).show();
+
                     finish();
                 } else {
                     Toast.makeText(AddNoteActivity.this, "Pavadinimas ir turinys negali būti tušti", Toast.LENGTH_SHORT).show();
